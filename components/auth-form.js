@@ -2,10 +2,11 @@
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
 
-import { signup } from '@/actions/auth-actions';
+import { auth } from '@/actions/auth-actions';
+import { useState } from 'react';
 
-export default function AuthForm() {
-  const [formState, fromAction] = useFormState(signup, {});
+export default function AuthForm({ mode }) { // 'login', 'signup'
+  const [formState, fromAction] = useFormState(auth.bind(null, mode), {}); //bind 첫번째 인자는 this 값 => 사용 안하면 null
   
   return (
     <form id="auth-form" action={fromAction}>
@@ -29,11 +30,12 @@ export default function AuthForm() {
       )}
       <p>
         <button type="submit">
-          Create Account
+          {mode === 'login' ? 'Login' : 'Create Account'}
         </button>
       </p>
       <p>
-        <Link href="/">Login with existing account.</Link>
+        {mode === 'login' && <Link href="/?mode=signup">Create an account.</Link>}
+        {mode === 'signup' && <Link href="/?mode=login">Login with existing account.</Link>}
       </p>
     </form>
   );
